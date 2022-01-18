@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class WeatherService {
-  Future getCurrentWeather(String cityName) async {
+  Future<WeatherModel> getCurrentWeather(String cityName) async {
     late WeatherModel weather;
     String apiKey = "17cc0ba49361a4a0fe7db3bbe77e1ba9";
 
