@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 
@@ -25,7 +26,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
   Stream? _weatherStream;
   late SharedPreferences prefs;
 
-  final syncServerIp = "192.168.1.39";
+  final syncServerIp = Platform.isAndroid ? '10.0.2.2' : '127.0.0.1';
 
   void saveWeatherModel(WeatherModel weather) {
     final _weatherModel = WeatherEntityModel(
@@ -120,15 +121,13 @@ class _WeatherScreenState extends State<WeatherScreen> {
               if (weather != null && !hasBeenInitialized) {
                 return WeatherBox(weather: weather!);
               }
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
-              } else if (snapshot.hasData) {
+              if (snapshot.hasData && !snapshot.data.isEmpty) {
                 final weather = snapshot.data[0] as WeatherEntityModel;
                 return WeatherBox(weather: weather);
               } else if (snapshot.hasError) {
                 return const Text("Error getting weather");
               } else {
-                return const Text("No results found..");
+                return const CircularProgressIndicator();
               }
             },
             stream: _weatherStream,
